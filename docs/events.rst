@@ -107,3 +107,6 @@ will be sent to the configured webhook for every new system found.::
       type = "system"
       webhook = "hook_url"
       subscribes_to = "system"
+
+
+.. _zkillboard: https://www.zkillboard.com
