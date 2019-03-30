@@ -215,6 +215,9 @@ class Delta:
     """Represents the difference between two Universes with added, removed,
        and changed connections."""
 
+    left: Universe
+    right: Universe
+
     connections_add: Set[Connection]
     connections_del: Set[Connection]
 
@@ -228,6 +231,9 @@ class Delta:
 
         instance = cls()
 
+        instance.left = left
+        instance.right = right
+
         for connection in set(right.connections.keys()) - set(
             left.connections.keys()
         ):
@@ -239,3 +245,19 @@ class Delta:
             instance.connections_del.add(left.connections[connection])
 
         return instance
+
+    @property
+    def systems_add(self) -> Set[System]:
+        """Convenience helper to list systems to be added as determined from
+           from connections."""
+        return set(chain.from_iterable(self.right.connections.keys())) - set(
+            chain.from_iterable(self.left.connections.keys())
+        )
+
+    @property
+    def systems_del(self) -> Set[System]:
+        """Convenience helper to list systems to be removed as determined from
+           from connections."""
+        return set(chain.from_iterable(self.left.connections.keys())) - set(
+            chain.from_iterable(self.right.connections.keys())
+        )
