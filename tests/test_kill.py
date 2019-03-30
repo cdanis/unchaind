@@ -22,6 +22,7 @@ def standard_package() -> Dict[str, Any]:
                 "alliance_id": 2,
                 "corporation_id": 20,
                 "character_id": 200,
+                "ship_type_id": 582,
             },
             "attackers": [
                 {"alliance_id": 1, "corporation_id": 10, "character_id": 100},
@@ -519,6 +520,97 @@ class NotifierKillTest(unittest.TestCase):
             True,
         )
 
+    def test__match_system_class(self) -> None:
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill._match_system_class(
+                    5, standard_package(), empty_universe()
+                )
+            ),
+            False,
+        )
+
+        package = standard_package()
+        package["killmail"]["solar_system_id"] = 31_002_479  # J100820
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill._match_system_class(
+                    5, package, empty_universe()
+                )
+            ),
+            True,
+        )
+
+    def test__match_system_name(self) -> None:
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill._match_system_name(
+                    "not-the-right-name", standard_package(), empty_universe()
+                )
+            ),
+            False,
+        )
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill._match_system_name(
+                    "Amarr", standard_package(), empty_universe()
+                )
+            ),
+            True,
+        )
+
+        package = standard_package()
+        package["killmail"]["solar_system_id"] = 31_002_479  # J100820
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill._match_system_name(
+                    "J100820", package, empty_universe()
+                )
+            ),
+            True,
+        )
+
+    def test__match_ship_class(self) -> None:
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill._match_ship_class(
+                    "Cruiser", standard_package(), empty_universe()
+                )
+            ),
+            False,
+        )
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill._match_ship_class(
+                    "Frigate", standard_package(), empty_universe()
+                )
+            ),
+            True,
+        )
+
+    def test__match_ship_name(self) -> None:
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill._match_ship_name(
+                    "Merlin", standard_package(), empty_universe()
+                )
+            ),
+            False,
+        )
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill._match_ship_name(
+                    "Bantam", standard_package(), empty_universe()
+                )
+            ),
+            True,
+        )
+
 
 class MatchKillmailTest(unittest.TestCase):
     def test__simple_match(self) -> None:
@@ -568,6 +660,42 @@ class MatchKillmailTest(unittest.TestCase):
             config["notifier"],
         )
 
+        config["notifier"][0]["filter"]["require_all_of"].append(
+            {"system_name": "Amarr"}
+        )
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), standard_package()
+                )
+            ),
+            config["notifier"],
+        )
+
+        config["notifier"][0]["filter"]["require_all_of"].append(
+            {"ship_name": "Bantam"}
+        )
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), standard_package()
+                )
+            ),
+            config["notifier"],
+        )
+
+        config["notifier"][0]["filter"]["require_all_of"].append(
+            {"ship_class": "Frigate"}
+        )
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), standard_package()
+                )
+            ),
+            config["notifier"],
+        )
+
         config["notifier"][0]["filter"]["require_any_of"] = [
             {"security": "low"}
         ]
@@ -602,4 +730,40 @@ class MatchKillmailTest(unittest.TestCase):
                 )
             ),
             [],
+        )
+
+    def test__wormhole_class(self) -> None:
+        config: Dict[str, Any] = {
+            "notifier": [
+                {
+                    "subscribes_to": "kill",
+                    "filter": {
+                        "require_all_of": [
+                            {"system_class": 5},
+                        ]
+                    },
+                }
+            ]
+        }
+
+        package = standard_package()
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), package
+                )
+            ),
+            [],
+        )
+
+        package["killmail"]["solar_system_id"] = 31_002_479  # J100820
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), package
+                )
+            ),
+            config["notifier"],
         )
