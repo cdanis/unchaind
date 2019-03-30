@@ -99,6 +99,7 @@ The ``system_class`` filter uses class of the system to include or
 exclude killmails.
 
 System classes are defined as follows:
+
 - 1-6: C1-C6 (Wormholes)
 - 7: low/high
 - 9: null
