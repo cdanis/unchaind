@@ -10,7 +10,7 @@ from unchaind.http import HTTPSession
 from unchaind.util.kill import payload_for_killmail
 from unchaind.universe import System, Universe, Multiverse
 from unchaind.sink import sinks
-
+import unchaind.static as static
 
 log = logging.getLogger(__name__)
 
@@ -218,6 +218,38 @@ async def _match_minimum_value(
     return bool(kill_value >= value)
 
 
+async def _match_system_class(
+    value: str, package: Dict[str, Any], universe: Universe
+) -> bool:
+    kill_system_id = package["killmail"]["solar_system_id"]
+    kill_system_class = static.systemClasses[kill_system_id]
+    return bool(kill_system_class == value)
+
+
+async def _match_system_name(
+    value: str, package: Dict[str, Any], universe: Universe
+) -> bool:
+    kill_system_id = package["killmail"]["solar_system_id"]
+    kill_system_name = static.systems[kill_system_id]
+    return bool(kill_system_name == value)
+
+
+async def _match_ship_class(
+    value: str, package: Dict[str, Any], universe: Universe
+) -> bool:
+    kill_ship_id = package["killmail"]["victim"]["ship_type_id"]
+    kill_ship_class = static.ships[kill_ship_id]["class"]
+    return bool(kill_ship_class == value)
+
+
+async def _match_ship_name(
+    value: str, package: Dict[str, Any], universe: Universe
+) -> bool:
+    kill_ship_id = package["killmail"]["victim"]["ship_type_id"]
+    kill_ship_name = static.ships[kill_ship_id]["name"]
+    return bool(kill_ship_name == value)
+
+
 # I gave up on trying to type this properly...
 matchers: Dict[str, Any] = {
     "location": _match_location,
@@ -232,6 +264,10 @@ matchers: Dict[str, Any] = {
     "character_loss": _match_character_loss,
     "minimum_value": _match_minimum_value,
     "security": _match_security_status,
+    "system_class": _match_system_class,
+    "system_name": _match_system_name,
+    "ship_class": _match_ship_class,
+    "ship_name": _match_ship_name,
 }
 
 
