@@ -93,6 +93,43 @@ security
 The ``security`` filter uses the security status of the system to include or
 exclude killmails.
 
+system_class
+^^^^^^^^
+The ``system_class`` filter uses class of the system to include or
+exclude killmails.
+
+System classes are defined as follows:
+- 1-6: C1-C6 (Wormholes)
+- 7: low/high
+- 9: null
+- 10-11: part of Jove space
+- 12: Thera
+- 13: C13s (Wormholes)
+- 14-18: weird drifter storyline holes, one per region
+- 19-23: abyssal space
+- 24: idk some weird P-001 space
+
+system_name
+^^^^^^^^
+The ``system_name`` filter uses the name of the system to include or
+exclude killmails.
+
+Ex: Jita
+
+ship_class
+^^^^^^^^
+The ``ship_class`` filter uses class of the ship killed to include or
+exclude killmails.
+
+Ex: Frigate
+
+ship_name
+^^^^^^^^
+The ``ship_name`` filter uses the name of the ship killed to include or
+exclude killmails.
+
+Ex: Bantam
+
 system
 ======
 The system filter runs for new systems being added to the map, for example
