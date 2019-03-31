@@ -20,7 +20,7 @@ instead of clobbering the system. You can do this by doing a quick
 environments environment variables to use.
 
 After this you can install all required dependencies for ``unchaind`` with
-the following two commands: ``python setup.py develop`` and 
+the following two commands: ``python setup.py develop`` and
 ``pip install -e .[dev]`` to install everything necessary into your local
 environment.
 
@@ -30,6 +30,12 @@ Running tests
 previously. You can set these up to automatically run some sanity checks
 before you commit any code. Do so by running ``pre-commit install`` in the
 checkout directory.
+
+To manually run the tests, first set PYTHONPATH to ". pytest"
+
+``export PYTHONPATH=. pytest``
+
+Then, run ``python -m unittest discover <path to test folder>``
 
 Doing work
 ----------
