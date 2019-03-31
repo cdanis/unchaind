@@ -1,4 +1,3 @@
-
 import unittest
 
 from unchaind import static as unchaind_static
