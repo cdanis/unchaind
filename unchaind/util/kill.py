@@ -14,6 +14,7 @@ from dataclasses import dataclass
 
 import unchaind.util.esi as esi_util
 from unchaind.universe import Universe, System
+import unchaind.static as static
 
 log = logging.getLogger(__name__)
 
@@ -110,7 +111,7 @@ async def stats_for_killmail(
             "victim_moniker": char_name_with_ticker(
                 package["killmail"]["victim"]
             ),
-            "victim_ship": esi_util.type_details(victim_ship_typeid),
+            "victim_ship": {"name": static.ships[victim_ship_typeid]["name"]},
             "final_blow_moniker": char_name_with_ticker(
                 next(
                     filter(
