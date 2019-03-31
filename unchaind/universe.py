@@ -1,7 +1,7 @@
 """Classes and types describing our Universe and the parts it consists of."""
 import logging
 
-from typing import Dict, Set, FrozenSet, List
+from typing import Dict, Set, FrozenSet, List, Union
 from itertools import chain
 
 import unchaind.static as static
@@ -71,8 +71,8 @@ class System(object):
 
     def __init__(self, identifier: int) -> None:
         self.identifier = identifier
-        self.name = static.systems[identifier]["name"]
-        self.truesec = static.systems[identifier]["secStatus"]
+        self.name = static.systems[identifier].name
+        self.security_status = static.systems[identifier].security_status
 
     def __hash__(self) -> int:
         """The identity of a System uses its identifier for uniqueness."""
@@ -127,7 +127,7 @@ class Universe:
     def systems(self) -> Set[System]:
         return set(chain.from_iterable(self.connections))
 
-    async def system_name(self, system: System) -> str:
+    async def system_name(self, system: System) -> Union[str, float]:
         if system in self.aliases:
             return f"{self.aliases[system]} ({system.name})"
 

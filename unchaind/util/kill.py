@@ -111,7 +111,7 @@ async def stats_for_killmail(
             "victim_moniker": char_name_with_ticker(
                 package["killmail"]["victim"]
             ),
-            "victim_ship": {"name": static.ships[victim_ship_typeid]["name"]},
+            "victim_ship": {"name": static.ships[victim_ship_typeid].name},
             "final_blow_moniker": char_name_with_ticker(
                 next(
                     filter(
@@ -141,15 +141,17 @@ async def stats_for_killmail(
             "solar_system_name": universe.system_name(System(solar_system_id)),
         }
 
-        d = await multi(d)
+        d = await multi(d)  # type: ignore
 
-        d["victim_ship"] = d["victim_ship"]["name"]
+        d["victim_ship"] = d["victim_ship"]["name"]  # type: ignore
         d["attacker_entities_summary"] = _stringify_counter_by_popularity(
-            collections.Counter(d["attacker_entities"])
+            collections.Counter(d["attacker_entities"])  # type: ignore
         )
         d["attacker_ships_summary"] = _stringify_counter_by_popularity(
             collections.Counter(
-                map(operator.itemgetter("name"), d["attacker_ships"])
+                map(  # type: ignore
+                    operator.itemgetter("name"), d["attacker_ships"]
+                )
             )
         )
 
@@ -166,7 +168,7 @@ async def stats_for_killmail(
         d["isk_value"] = package["zkb"]["totalValue"]
         d["solar_system_id"] = solar_system_id
 
-        return KillmailStats(**d)
+        return KillmailStats(**d)  # type: ignore
     except Exception as e:
         log.exception(e)
 
@@ -231,6 +233,8 @@ async def _slack_payload_for_killmail(
         )
 
     return rv
+
+
 async def _discord_payload_for_killmail(
     notifier: Dict[str, Any], package: Dict[str, Any], universe: Universe
 ) -> Optional[Dict[str, Any]]:
@@ -249,15 +253,13 @@ async def _discord_payload_for_killmail(
         "embeds": [
             {
                 "title": text,
-                "description": "[zKill]("+stats.zkb_url()+")",
-                "color": 7471618,
-                "thumbnail": {
-                  "url": stats.victim_ship_thumb_url(),
-                             },
+                "description": f"[zKill]({stats.zkb_url()})",
+                "color": 7_471_618,
+                "thumbnail": {"url": stats.victim_ship_thumb_url()},
                 "footer": {
-                   "icon_url": "https://zkillboard.com/img/wreck.png",
-                   "text": stats.zkb_url(),
-                          },
+                    "icon_url": "https://zkillboard.com/img/wreck.png",
+                    "text": stats.zkb_url(),
+                },
                 "fields": [
                     {
                         "inline": True,
@@ -269,18 +271,15 @@ async def _discord_payload_for_killmail(
                         "name": "were flying",
                         "value": stats.attacker_ships_summary,
                     },
-
                 ],
-
             }
         ]
     }
 
-
-
     return rv
+
 
 payload_for_killmail: Dict[str, Callable] = {
     "slack": _slack_payload_for_killmail,
-    "discord": _discord_payload_for_killmail
+    "discord": _discord_payload_for_killmail,
 }

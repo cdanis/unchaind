@@ -1,25 +1,40 @@
 import os
 
-from typing import Dict, List, Union
+from typing import Dict, List
+
+import dataclasses
 
 
-def load_systems() -> Dict[int, Dict[str, Union[str,float,int]]]:
-    systems: Dict[int, Dict[str, Union[str,float,int]]] = {}
+@dataclasses.dataclass
+class System:
+    name: str
+    security_status: float
+    klass: int
+
+
+@dataclasses.dataclass
+class Ship:
+    name: str
+    klass: str
+
+
+def load_systems() -> Dict[int, System]:
+    systems: Dict[int, System] = {}
 
     with open(
         os.path.join(os.path.dirname(__file__), "data", "system.txt")
     ) as f:
         for line in f:
-            typeID, systemName, systemSecStatus, systemClass = line.strip().split("|")
+            type_id, system_name, system_security_status, system_class = line.strip().split(
+                "|"
+            )
 
-            if systemClass == '':
-                systemClass = '-1'
+            if not system_class:
+                system_class = "-1"
 
-            systems[int(typeID)] = {
-                "name": systemName,
-                "secStatus": float(systemSecStatus),
-                "class": int(systemClass)
-            }
+            systems[int(type_id)] = System(
+                system_name, float(system_security_status), int(system_class)
+            )
 
     return systems
 
@@ -44,23 +59,20 @@ def load_connections() -> Dict[int, List[int]]:
     return connections
 
 
-def load_ships() -> Dict[int, Dict[str, str]]:
-    ships: Dict[int, Dict[str, str]] = {}
+def load_ships() -> Dict[int, Ship]:
+    ships: Dict[int, Ship] = {}
 
     with open(
         os.path.join(os.path.dirname(__file__), "data", "ships.txt")
     ) as f:
         for line in f:
-            typeID, shipName, shipClass = line.strip().split("|")
+            type_id, ship_name, ship_class = line.strip().split("|")
 
-            ships[int(typeID)] = {
-                "name": shipName,
-                "class": shipClass,
-            }
+            ships[int(type_id)] = Ship(ship_name, ship_class)
 
     return ships
 
 
-systems: Dict[int, str] = load_systems()
-connections: Dict[int, List[int]] = load_connections()
-ships: Dict[int, Dict[str, str]] = load_ships()
+systems = load_systems()
+connections = load_connections()
+ships = load_ships()

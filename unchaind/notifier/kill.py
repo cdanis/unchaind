@@ -132,11 +132,11 @@ async def _match_security_status(
     value = value.lower()
 
     if value in ("high", "highsec"):
-        return solar_system.truesec >= 0.45
+        return solar_system.security_status >= 0.45
     if value in ("low", "lowsec"):
-        return 0.0 < solar_system.truesec < 0.45
+        return 0.0 < solar_system.security_status < 0.45
     if value in ("null", "nullsec"):
-        return solar_system.truesec < 0.0
+        return solar_system.security_status < 0.0
 
     log.warning("unknown security status '%s'", value)
     return False
@@ -222,7 +222,7 @@ async def _match_system_class(
     value: str, package: Dict[str, Any], universe: Universe
 ) -> bool:
     kill_system_id = package["killmail"]["solar_system_id"]
-    kill_system_class = static.systems[kill_system_id]["class"]
+    kill_system_class = static.systems[kill_system_id].klass
     return bool(kill_system_class == value)
 
 
@@ -230,7 +230,7 @@ async def _match_system_name(
     value: str, package: Dict[str, Any], universe: Universe
 ) -> bool:
     kill_system_id = package["killmail"]["solar_system_id"]
-    kill_system_name = static.systems[kill_system_id]["name"]
+    kill_system_name = static.systems[kill_system_id].name
     return bool(kill_system_name == value)
 
 
@@ -238,7 +238,7 @@ async def _match_ship_class(
     value: str, package: Dict[str, Any], universe: Universe
 ) -> bool:
     kill_ship_id = package["killmail"]["victim"]["ship_type_id"]
-    kill_ship_class = static.ships[kill_ship_id]["class"]
+    kill_ship_class = static.ships[kill_ship_id].klass
     return bool(kill_ship_class == value)
 
 
@@ -246,7 +246,7 @@ async def _match_ship_name(
     value: str, package: Dict[str, Any], universe: Universe
 ) -> bool:
     kill_ship_id = package["killmail"]["victim"]["ship_type_id"]
-    kill_ship_name = static.ships[kill_ship_id]["name"]
+    kill_ship_name = static.ships[kill_ship_id].name
     return bool(kill_ship_name == value)
 
 
