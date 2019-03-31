@@ -71,8 +71,8 @@ class System(object):
 
     def __init__(self, identifier: int) -> None:
         self.identifier = identifier
-        self.name = static.systems[identifier]
-        self.truesec = static.truesec[identifier]
+        self.name = static.systems[identifier]["name"]
+        self.truesec = static.systems[identifier]["secStatus"]
 
     def __hash__(self) -> int:
         """The identity of a System uses its identifier for uniqueness."""

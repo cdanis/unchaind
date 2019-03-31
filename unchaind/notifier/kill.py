@@ -222,7 +222,7 @@ async def _match_system_class(
     value: str, package: Dict[str, Any], universe: Universe
 ) -> bool:
     kill_system_id = package["killmail"]["solar_system_id"]
-    kill_system_class = static.systemClasses[kill_system_id]
+    kill_system_class = static.systems[kill_system_id]["class"]
     return bool(kill_system_class == value)
 
 
@@ -230,7 +230,7 @@ async def _match_system_name(
     value: str, package: Dict[str, Any], universe: Universe
 ) -> bool:
     kill_system_id = package["killmail"]["solar_system_id"]
-    kill_system_name = static.systems[kill_system_id]
+    kill_system_name = static.systems[kill_system_id]["name"]
     return bool(kill_system_name == value)
 
 
