@@ -13,7 +13,7 @@ class System:
 
 
 @dataclasses.dataclass
-class Ship:
+class Item:
     name: str
     klass: str
 
@@ -59,20 +59,20 @@ def load_connections() -> Dict[int, List[int]]:
     return connections
 
 
-def load_ships() -> Dict[int, Ship]:
-    ships: Dict[int, Ship] = {}
+def load_items() -> Dict[int, Item]:
+    items: Dict[int, Item] = {}
 
     with open(
-        os.path.join(os.path.dirname(__file__), "data", "ships.txt")
+        os.path.join(os.path.dirname(__file__), "data", "items.txt")
     ) as f:
         for line in f:
-            type_id, ship_name, ship_class = line.strip().split("|")
+            type_id, item_name, item_class = line.strip().split("|")
 
-            ships[int(type_id)] = Ship(ship_name, ship_class)
+            items[int(type_id)] = Item(item_name, item_class)
 
-    return ships
+    return items
 
 
 systems = load_systems()
 connections = load_connections()
-ships = load_ships()
+items = load_items()

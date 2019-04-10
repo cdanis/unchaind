@@ -573,10 +573,10 @@ class NotifierKillTest(unittest.TestCase):
             True,
         )
 
-    def test__match_ship_class(self) -> None:
+    def test__match_loss_class(self) -> None:
         self.assertEqual(
             loop.run_until_complete(
-                unchaind_kill._match_ship_class(
+                unchaind_kill._match_loss_class(
                     "Cruiser", standard_package(), empty_universe()
                 )
             ),
@@ -585,17 +585,17 @@ class NotifierKillTest(unittest.TestCase):
 
         self.assertEqual(
             loop.run_until_complete(
-                unchaind_kill._match_ship_class(
+                unchaind_kill._match_loss_class(
                     "Frigate", standard_package(), empty_universe()
                 )
             ),
             True,
         )
 
-    def test__match_ship_name(self) -> None:
+    def test__match_loss_name(self) -> None:
         self.assertEqual(
             loop.run_until_complete(
-                unchaind_kill._match_ship_name(
+                unchaind_kill._match_loss_name(
                     "Merlin", standard_package(), empty_universe()
                 )
             ),
@@ -604,7 +604,7 @@ class NotifierKillTest(unittest.TestCase):
 
         self.assertEqual(
             loop.run_until_complete(
-                unchaind_kill._match_ship_name(
+                unchaind_kill._match_loss_name(
                     "Bantam", standard_package(), empty_universe()
                 )
             ),
@@ -673,7 +673,7 @@ class MatchKillmailTest(unittest.TestCase):
         )
 
         config["notifier"][0]["filter"]["require_all_of"].append(
-            {"ship_name": "Bantam"}
+            {"loss_name": "Bantam"}
         )
         self.assertEqual(
             loop.run_until_complete(
@@ -685,7 +685,7 @@ class MatchKillmailTest(unittest.TestCase):
         )
 
         config["notifier"][0]["filter"]["require_all_of"].append(
-            {"ship_class": "Frigate"}
+            {"loss_class": "Frigate"}
         )
         self.assertEqual(
             loop.run_until_complete(
@@ -758,6 +758,158 @@ class MatchKillmailTest(unittest.TestCase):
         )
 
         package["killmail"]["solar_system_id"] = 31_002_479  # J100820
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), package
+                )
+            ),
+            config["notifier"],
+        )
+
+    # class and name are the same thing for a mobile depot
+    def test__kill_mobile_depot(self) -> None:
+        config: Dict[str, Any] = {
+            "notifier": [
+                {
+                    "subscribes_to": "kill",
+                    "filter": {
+                        "require_all_of": [
+                            {"loss_class": "Mobile Depot"},
+                        ]
+                    },
+                }
+            ]
+        }
+
+        package = standard_package()
+
+        package["killmail"]["victim"]["ship_type_id"] = 33474
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), package
+                )
+            ),
+            config["notifier"],
+        )
+
+        config = {
+            "notifier": [
+                {
+                    "subscribes_to": "kill",
+                    "filter": {
+                        "require_all_of": [
+                            {"loss_name": "Mobile Depot"},
+                        ]
+                    },
+                }
+            ]
+        }
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), package
+                )
+            ),
+            config["notifier"],
+        )
+
+
+    def test__kill_pos(self) -> None:
+        config: Dict[str, Any] = {
+            "notifier": [
+                {
+                    "subscribes_to": "kill",
+                    "filter": {
+                        "require_all_of": [
+                            {"loss_class": "Large Collidable Object"},
+                        ]
+                    },
+                }
+            ]
+        }
+
+        package = standard_package()
+
+        # Sansha Starbase Control Tower
+        package["killmail"]["victim"]["ship_type_id"] = 3059
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), package
+                )
+            ),
+            config["notifier"],
+        )
+
+        config = {
+            "notifier": [
+                {
+                    "subscribes_to": "kill",
+                    "filter": {
+                        "require_all_of": [
+                            {"loss_name": "Sansha Starbase Control Tower"},
+                        ]
+                    },
+                }
+            ]
+        }
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), package
+                )
+            ),
+            config["notifier"],
+        )
+
+
+    def test__kill_citadel(self) -> None:
+        config: Dict[str, Any] = {
+            "notifier": [
+                {
+                    "subscribes_to": "kill",
+                    "filter": {
+                        "require_all_of": [
+                            {"loss_class": "Citadel"},
+                        ]
+                    },
+                }
+            ]
+        }
+
+        package = standard_package()
+
+        # Astrahus
+        package["killmail"]["victim"]["ship_type_id"] = 35832
+
+        self.assertEqual(
+            loop.run_until_complete(
+                unchaind_kill.match_killmail(
+                    config, empty_universe(), package
+                )
+            ),
+            config["notifier"],
+        )
+
+        config = {
+            "notifier": [
+                {
+                    "subscribes_to": "kill",
+                    "filter": {
+                        "require_all_of": [
+                            {"loss_name": "Astrahus"},
+                        ]
+                    },
+                }
+            ]
+        }
 
         self.assertEqual(
             loop.run_until_complete(

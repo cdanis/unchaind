@@ -20,11 +20,8 @@ class StaticTest(unittest.TestCase):
             unchaind_static.systems[31_002_479].klass, 5
         )  # J100820
 
-    def test__static_ships__count(self) -> None:
-        self.assertEqual(len(unchaind_static.ships), 497)
-
     def test__static_ships__can_convert_to_name(self) -> None:
-        self.assertEqual(unchaind_static.ships[582].name, "Bantam")
+        self.assertEqual(unchaind_static.items[582].name, "Bantam")
 
     def test__static_ships__can_convert_to_class(self) -> None:
-        self.assertEqual(unchaind_static.ships[582].klass, "Frigate")
+        self.assertEqual(unchaind_static.items[582].klass, "Frigate")

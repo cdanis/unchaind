@@ -234,20 +234,20 @@ async def _match_system_name(
     return bool(kill_system_name == value)
 
 
-async def _match_ship_class(
+async def _match_loss_class(
     value: str, package: Dict[str, Any], universe: Universe
 ) -> bool:
-    kill_ship_id = package["killmail"]["victim"]["ship_type_id"]
-    kill_ship_class = static.ships[kill_ship_id].klass
-    return bool(kill_ship_class == value)
+    kill_loss_id = package["killmail"]["victim"]["ship_type_id"]
+    kill_loss_class = static.items[kill_loss_id].klass
+    return bool(kill_loss_class == value)
 
 
-async def _match_ship_name(
+async def _match_loss_name(
     value: str, package: Dict[str, Any], universe: Universe
 ) -> bool:
-    kill_ship_id = package["killmail"]["victim"]["ship_type_id"]
-    kill_ship_name = static.ships[kill_ship_id].name
-    return bool(kill_ship_name == value)
+    kill_loss_id = package["killmail"]["victim"]["ship_type_id"]
+    kill_loss_name = static.items[kill_loss_id].name
+    return bool(kill_loss_name == value)
 
 
 # I gave up on trying to type this properly...
@@ -266,8 +266,8 @@ matchers: Dict[str, Any] = {
     "security": _match_security_status,
     "system_class": _match_system_class,
     "system_name": _match_system_name,
-    "ship_class": _match_ship_class,
-    "ship_name": _match_ship_name,
+    "loss_class": _match_loss_class,
+    "loss_name": _match_loss_name,
 }
 
 

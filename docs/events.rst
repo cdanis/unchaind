@@ -117,19 +117,32 @@ exclude killmails.
 
 Ex: Jita
 
-ship_class
+loss_class
 ^^^^^^^^
-The ``ship_class`` filter uses class of the ship killed to include or
+The ``loss_class`` filter uses class of the thing that was killed to include or
 exclude killmails.
 
-Ex: Frigate
+Examples:
 
-ship_name
+- Frigate
+- Citadel
+- Large Collidable Object
+- Mobile Depot
+
+Search unchaind/data/items.txt for the item that you would like to filter on to
+determine its class. The format of the file is typeid|name|class.
+
+loss_name
 ^^^^^^^^
-The ``ship_name`` filter uses the name of the ship killed to include or
+The ``loss_name`` filter uses the name of the thing that was killed to include or
 exclude killmails.
 
-Ex: Bantam
+Examples:
+
+- Bantam
+- Astrahus
+- Sansha Starbase Control Tower
+- Mobile Depot
 
 system
 ======
