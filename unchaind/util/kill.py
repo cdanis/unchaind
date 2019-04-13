@@ -111,7 +111,7 @@ async def stats_for_killmail(
             "victim_moniker": char_name_with_ticker(
                 package["killmail"]["victim"]
             ),
-            "victim_ship": {"name": static.ships[victim_ship_typeid].name},
+            "victim_ship": {"name": static.items[victim_ship_typeid].name},
             "final_blow_moniker": char_name_with_ticker(
                 next(
                     filter(
