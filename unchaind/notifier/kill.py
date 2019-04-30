@@ -63,6 +63,8 @@ async def process_one_killmail(
         log.debug(f"process_one_killmail: no matches for %d", kill_id)
         return
 
+    log.info(f"process_one_killmail: %d matched %r", kill_id, matches)
+
     await gather(
         *[
             sinks[match["type"]](
