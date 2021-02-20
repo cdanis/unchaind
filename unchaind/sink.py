@@ -16,6 +16,7 @@ async def discord(
     message: str,
     *,
     payload: Optional[Dict[str, Any]] = None,
+    killmail: Optional[Dict[str, Any]] = None,
 ) -> None:
     """Send a Discord message to the configured channel."""
     if payload is not None:
@@ -39,9 +40,12 @@ async def console(
     message: str,
     *,
     payload: Optional[Dict[str, Any]] = None,
+    killmail: Optional[Dict[str, Any]] = None,
 ) -> None:
     """Log a message.  Intended for debugging use."""
     log.info("NOTIFICATION: " + message)
+    if notifier.get('kill_json', False):
+        print(json.dumps(killmail))
 
 
 async def slack(
@@ -49,6 +53,7 @@ async def slack(
     message: str,
     *,
     payload: Optional[Dict[str, Any]] = None,
+    killmail: Optional[Dict[str, Any]] = None,
 ) -> None:
     """Send a Slack message to the configured channel.  If payload was provided,
     it's JSONified and used as the body of the request to Slack.  Otherwise, message

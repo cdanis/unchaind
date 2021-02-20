@@ -75,6 +75,7 @@ async def process_one_killmail(
                 )
                 if match["type"] in payload_for_killmail
                 else None,
+                killmail=package,
             )
             for match in matches
         ]
