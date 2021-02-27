@@ -111,7 +111,6 @@ async def stats_for_killmail(
             "victim_moniker": char_name_with_ticker(
                 package["killmail"]["victim"]
             ),
-            "victim_ship": {"name": static.items[victim_ship_typeid].name},
             "final_blow_moniker": char_name_with_ticker(
                 next(
                     filter(
@@ -142,6 +141,8 @@ async def stats_for_killmail(
         }
 
         d = await multi(d)  # type: ignore
+        d["victim_ship"] = {"name": static.items[victim_ship_typeid].name}
+
 
         d["victim_ship"] = d["victim_ship"]["name"]  # type: ignore
         d["attacker_entities_summary"] = _stringify_counter_by_popularity(
