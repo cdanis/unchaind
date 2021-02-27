@@ -36,9 +36,9 @@ async def process_one_killmail(
             "process_one_killmail: did not contain 'package' key (%r)",
             killmail_str,
         )
-        return
+        #return
 
-    package = data.get("package", None)
+    package = data.get("package", data)
 
     if not package:
         log.debug("process_one_killmail: the package was empty")
